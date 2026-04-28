@@ -65,7 +65,6 @@ export const loginUser = (credentials) => api.post('/auth/login', credentials);
 export const registerUser = (userData) => api.post('/auth/register', userData);
 export const sendVerificationCode = (email) => api.post('/auth/send-verification-code', { email });
 export const updateProfile = (id, profileData) => api.put(`/auth/profile/${id}`, profileData);
-export const googleLogin = (credential, role) => api.post('/auth/google', { credential, role });
 export const forgotPassword = (email) => api.post('/auth/forgot-password', { email });
 export const resetPassword = (otp, newPassword) => api.post('/auth/reset-password', { otp, newPassword });
 export const verifyOtp = (otp) => api.post('/auth/verify-otp', { otp });

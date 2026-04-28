@@ -1,17 +1,10 @@
-import React, { useState } from 'react';
-import { useNavigate, Link } from 'react-router-dom';
-import { Eye, EyeOff, Mail, Lock, LogIn, GraduationCap, Shield, Building2, UserCog } from 'lucide-react';
-import { useAuth } from '../../context/AuthContext';
-import toast from 'react-hot-toast';
-import { GoogleLogin } from '@react-oauth/google';
-
 const Login = () => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [showPassword, setShowPassword] = useState(false);
     const [role, setRole] = useState('student');
     const [loading, setLoading] = useState(false);
-    const { login, loginWithGoogle } = useAuth();
+    const { login } = useAuth();
     const navigate = useNavigate();
 
     const handleLogin = async (e) => {
@@ -32,19 +25,6 @@ const Login = () => {
                 ? err.response.data
                 : (err.response?.data?.message || err.message || 'Invalid credentials or role.');
             toast.error(errorMessage);
-        } finally {
-            setLoading(false);
-        }
-    };
-
-    const handleGoogleSuccess = async (credentialResponse) => {
-        setLoading(true);
-        try {
-            const userData = await loginWithGoogle(credentialResponse.credential, role);
-            toast.success(`Welcome back, ${userData.name}!`);
-            navigate(`/${userData.role}/dashboard`);
-        } catch (err) {
-            toast.error(err.response?.data?.message || err.message || 'Google login failed.');
         } finally {
             setLoading(false);
         }
@@ -169,22 +149,6 @@ const Login = () => {
                             Create an account
                         </Link>
                     </p>
-
-                    <div className="login-divider" style={{ margin: '20px 0' }}>
-                        <span className="divider-text">OR</span>
-                    </div>
-
-                    <div className="google-login-wrapper" style={{ display: 'flex', justifyContent: 'center' }}>
-                        <GoogleLogin
-                            onSuccess={handleGoogleSuccess}
-                            onError={() => toast.error('Google Sign-In failed')}
-                            useOneTap
-                            theme="outline"
-                            size="large"
-                            text="signin_with"
-                            shape="rectangular"
-                        />
-                    </div>
                 </div>
 
                 {/* Footer */}

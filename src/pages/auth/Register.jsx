@@ -45,10 +45,10 @@ const Register = () => {
             setStep(2);
         } catch (err) {
             console.error("Send Code Error: ", err);
-            const errorMsg = err.response?.data?.message || 
-                             (typeof err.response?.data === 'string' ? err.response.data : null) ||
-                             err.message ||
-                             "Failed to send code.";
+            const errorMsg = err.response?.data?.message ||
+                (typeof err.response?.data === 'string' ? err.response.data : null) ||
+                err.message ||
+                "Failed to send code.";
             toast.error(errorMsg);
         } finally {
             setLoading(false);
@@ -70,23 +70,23 @@ const Register = () => {
                 email: formData.email,
                 password: formData.password,
                 role: role,
-                roll: role === 'student' ? formData.rollNumber : undefined,     
-                company: role === 'employer' ? formData.companyName : null,     
+                roll: role === 'student' ? formData.rollNumber : undefined,
+                company: role === 'employer' ? formData.companyName : null,
                 isProfileComplete: false,
                 isNewUser: true,
                 verificationCode: formData.verificationCode,
                 adminSecret: role === 'admin' ? formData.adminSecret : undefined,
                 officerSecret: role === 'officer' ? formData.officerSecret : undefined
             };
-            await authRegister(userData);
-            toast.success('Registration successful! Please log in.');
-            navigate('/login');
+            const result = await authRegister(userData);
+            toast.success('Registration and Login successful!');
+            navigate(`/${result.role}/dashboard`);
         } catch (err) {
             console.error("Registration Error: ", err);
-            const errorMsg = err.response?.data?.message || 
-                             (typeof err.response?.data === 'string' ? err.response.data : null) || 
-                             err.message || 
-                             "Registration failed.";
+            const errorMsg = err.response?.data?.message ||
+                (typeof err.response?.data === 'string' ? err.response.data : null) ||
+                err.message ||
+                "Registration failed.";
             toast.error(errorMsg);
         } finally {
             setLoading(false);
@@ -164,7 +164,7 @@ const Register = () => {
                                 type="button"
                                 onClick={handleSendCode}
                                 disabled={loading || step === 2}
-                                style={{ padding: "0.6rem 1rem", backgroundColor: step === 2 ? "#10b981" : "#2563eb", color: "white", borderRadius: "0.375rem", fontWeight: "500", border: "none", cursor: (loading || step === 2) ? "not-allowed" : "pointer",  height: "42px", marginBottom: "1rem", opacity: (loading || step === 2) ? 0.7 : 1 }}
+                                style={{ padding: "0.6rem 1rem", backgroundColor: step === 2 ? "#10b981" : "#2563eb", color: "white", borderRadius: "0.375rem", fontWeight: "500", border: "none", cursor: (loading || step === 2) ? "not-allowed" : "pointer", height: "42px", marginBottom: "1rem", opacity: (loading || step === 2) ? 0.7 : 1 }}
                             >
                                 {step === 2 ? "Code Sent" : "Send OTP"}
                             </button>
