@@ -1,0 +1,5 @@
+node_modules/
+dist/
+fullstack-project/
+.env
+.vite/
