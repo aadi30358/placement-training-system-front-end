@@ -112,44 +112,44 @@ const Register = () => {
                     <h1 className="login-title">Join the Portal</h1>
                     <p className="login-subtitle">Start your professional journey today</p>
 
-                    <form onSubmit={handleRegister} className="login-form">
-                        <div className="form-group">
-                            <label className="form-label">I am a...</label>
-                            <div className="role-tabs">
-                                {['student', 'officer', 'employer', 'admin'].map(r => (
-                                    <button
-                                        key={r}
-                                        type="button"
-                                        className={`role-tab ${role === r ? 'role-tab-active' : ''}`}
-                                        onClick={() => setRole(r)}
-                                    >
-                                        {r.charAt(0).toUpperCase() + r.slice(1)}
-                                    </button>
-                                ))}
-                            </div>
-                        </div>
+                    <form onSubmit={step === 1 ? handleSendCode : handleRegister} className="login-form">
+                        {step === 1 ? (
+                            <>
+                                <div className="form-group">
+                                    <label className="form-label">I am a...</label>
+                                    <div className="role-tabs">
+                                        {['student', 'officer', 'employer', 'admin'].map(r => (
+                                            <button
+                                                key={r}
+                                                type="button"
+                                                className={`role-tab ${role === r ? 'role-tab-active' : ''}`}
+                                                onClick={() => setRole(r)}
+                                            >
+                                                {r.charAt(0).toUpperCase() + r.slice(1)}
+                                            </button>
+                                        ))}
+                                    </div>
+                                </div>
 
-                        <div className="grid grid-cols-2 gap-4">
-                            <Input
-                                label="First Name"
-                                name="firstName"
-                                placeholder="John"
-                                required
-                                value={formData.firstName}
-                                onChange={handleChange}
-                            />
-                            <Input
-                                label="Last Name"
-                                name="lastName"
-                                placeholder="Doe"
-                                required
-                                value={formData.lastName}
-                                onChange={handleChange}
-                            />
-                        </div>
+                                <div className="grid grid-cols-2 gap-4">
+                                    <Input
+                                        label="First Name"
+                                        name="firstName"
+                                        placeholder="John"
+                                        required
+                                        value={formData.firstName}
+                                        onChange={handleChange}
+                                    />
+                                    <Input
+                                        label="Last Name"
+                                        name="lastName"
+                                        placeholder="Doe"
+                                        required
+                                        value={formData.lastName}
+                                        onChange={handleChange}
+                                    />
+                                </div>
 
-                        <div style={{ display: "flex", gap: "10px", alignItems: "flex-end" }}>
-                            <div style={{ flex: 1 }}>
                                 <Input
                                     label="Email Address"
                                     type="email"
@@ -159,102 +159,109 @@ const Register = () => {
                                     value={formData.email}
                                     onChange={handleChange}
                                 />
-                            </div>
-                            <button
-                                type="button"
-                                onClick={handleSendCode}
-                                disabled={loading || step === 2}
-                                style={{ padding: "0.6rem 1rem", backgroundColor: step === 2 ? "#10b981" : "#2563eb", color: "white", borderRadius: "0.375rem", fontWeight: "500", border: "none", cursor: (loading || step === 2) ? "not-allowed" : "pointer", height: "42px", marginBottom: "1rem", opacity: (loading || step === 2) ? 0.7 : 1 }}
-                            >
-                                {step === 2 ? "Code Sent" : "Send OTP"}
-                            </button>
-                        </div>
 
-                        {step === 2 && (
-                            <div style={{ marginBottom: "10px" }}>
+                                {role === 'student' && (
+                                    <Input
+                                        label="Roll Number"
+                                        name="rollNumber"
+                                        placeholder="20CS001"
+                                        required
+                                        value={formData.rollNumber}
+                                        onChange={handleChange}
+                                    />
+                                )}
+
+                                {role === 'employer' && (
+                                    <Input
+                                        label="Company Name"
+                                        name="companyName"
+                                        placeholder="Acme Inc."
+                                        required
+                                        value={formData.companyName}
+                                        onChange={handleChange}
+                                    />
+                                )}
+
+                                {role === 'admin' && (
+                                    <Input
+                                        label="Admin Secret"
+                                        type="password"
+                                        name="adminSecret"
+                                        placeholder="Secret Key Required"
+                                        required
+                                        value={formData.adminSecret}
+                                        onChange={handleChange}
+                                    />
+                                )}
+
+                                {role === 'officer' && (
+                                    <Input
+                                        label="Officer Secret"
+                                        type="password"
+                                        name="officerSecret"
+                                        placeholder="Secret Key Required"
+                                        required
+                                        value={formData.officerSecret}
+                                        onChange={handleChange}
+                                    />
+                                )}
+
+                                <div className="grid grid-cols-2 gap-4">
+                                    <Input
+                                        label="Password"
+                                        type="password"
+                                        name="password"
+                                        placeholder="••••••••"
+                                        required
+                                        value={formData.password}
+                                        onChange={handleChange}
+                                    />
+                                    <Input
+                                        label="Confirm"
+                                        type="password"
+                                        name="confirmPassword"
+                                        placeholder="••••••••"
+                                        required
+                                        value={formData.confirmPassword}
+                                        onChange={handleChange}
+                                    />
+                                </div>
+
+                                <button type="submit" className="submit-btn" disabled={loading}>
+                                    {loading ? <span className="btn-spinner" /> : "Send Verification Code"}
+                                </button>
+                            </>
+                        ) : (
+                            <>
+                                <div style={{ textAlign: 'center', marginBottom: '20px' }}>
+                                    <p style={{ fontSize: '0.9rem', color: '#666' }}>
+                                        A 6-digit code has been sent to <strong>{formData.email}</strong>
+                                    </p>
+                                </div>
                                 <Input
                                     label="Verification Code"
                                     type="text"
                                     name="verificationCode"
-                                    placeholder="Enter 6-digit code sent to email"
+                                    placeholder="Enter 6-digit code"
                                     required
                                     value={formData.verificationCode}
                                     onChange={handleChange}
                                     maxLength="6"
+                                    style={{ textAlign: 'center', fontSize: '1.5rem', letterSpacing: '4px' }}
                                 />
-                            </div>
+                                <button type="submit" className="submit-btn" disabled={loading}>
+                                    {loading ? <span className="btn-spinner" /> : "Verify & Create Account"}
+                                </button>
+                                <button
+                                    type="button"
+                                    className="login-register-link"
+                                    style={{ display: 'block', margin: '15px auto', background: 'none', border: 'none', cursor: 'pointer' }}
+                                    onClick={() => setStep(1)}
+                                >
+                                    Back to details
+                                </button>
+                            </>
                         )}
-
-                        {role === 'student' && (
-                            <Input
-                                label="Roll Number"
-                                name="rollNumber"
-                                placeholder="20CS001"
-                                required
-                                value={formData.rollNumber}
-                                onChange={handleChange}
-                            />
-                        )}
-
-                        {role === 'employer' && (
-                            <Input
-                                label="Company Name"
-                                name="companyName"
-                                placeholder="Acme Inc."
-                                required
-                                value={formData.companyName}
-                                onChange={handleChange}
-                            />
-                        )}
-
-                        {role === 'admin' && (
-                            <Input
-                                label="Admin Secret"
-                                type="password"
-                                name="adminSecret"
-                                placeholder="Secret Key Required"
-                                required
-                                value={formData.adminSecret}
-                                onChange={handleChange}
-                            />
-                        )}
-
-                        {role === 'officer' && (
-                            <Input
-                                label="Officer Secret"
-                                type="password"
-                                name="officerSecret"
-                                placeholder="Secret Key Required"
-                                required
-                                value={formData.officerSecret}
-                                onChange={handleChange}
-                            />
-                        )}
-
-                        <div className="grid grid-cols-2 gap-4">
-                            <Input
-                                label="Password"
-                                type="password"
-                                name="password"
-                                placeholder="••••••••"
-                                required
-                                value={formData.password}
-                                onChange={handleChange}
-                            />
-                            <Input
-                                label="Confirm"
-                                type="password"
-                                name="confirmPassword"
-                                placeholder="••••••••"
-                                required
-                                value={formData.confirmPassword}
-                                onChange={handleChange}
-                            />
-                        </div>
-
-                        <button type="submit" className="submit-btn" disabled={loading}>
-                            {loading ? <span className="btn-spinner" /> : "Create Account"}
-                        </button>
                     </form>
 
                     <p className="login-register-text">
