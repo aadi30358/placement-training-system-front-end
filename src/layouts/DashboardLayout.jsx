@@ -164,39 +164,3 @@ export const Navbar = ({ role }) => {
     );
 };
 
-export const Layout = ({ allowedRoles = [] }) => {
-    const { user, loading } = useAuth();
-    const location = useLocation();
-
-    if (loading) return null;
-
-    if (!user) {
-        return <Navigate to="/login" state={{ from: location }} />;
-    }
-
-    if (allowedRoles.length > 0 && !allowedRoles.includes(user.role)) {
-        return <Navigate to="/unauthorized" />;
-    }
-
-    const isInternal = location.pathname.includes('/student/') ||
-        location.pathname.includes('/admin/') ||
-        location.pathname.includes('/employer/') ||
-        location.pathname.includes('/officer/') ||
-        location.pathname === '/settings';
-
-    if (isInternal) {
-        return (
-            <div className="layout-container">
-                <Sidebar role={user.role} />
-                <div className="main-content">
-                    <Navbar role={user.role} />
-                    <main className="page-container">
-                        <Outlet />
-                    </main>
-                </div>
-            </div>
-        );
-    }
-
-    return <Outlet />;
-};

@@ -10,7 +10,10 @@ export const AuthProvider = ({ children }) => {
         return savedUser ? JSON.parse(savedUser) : null;
     });
 
+    const [loading, setLoading] = useState(false);
+
     const login = async (credentials) => {
+        setLoading(true);
         try {
             const res = await api.loginUser(credentials);
             setUser(res.data);
@@ -19,10 +22,13 @@ export const AuthProvider = ({ children }) => {
         } catch (err) {
             console.error(err);
             throw err;
+        } finally {
+            setLoading(false);
         }
     };
 
     const register = async (userData) => {
+        setLoading(true);
         try {
             const res = await api.registerUser(userData);
             if (res.data && res.data.token) {
@@ -33,16 +39,60 @@ export const AuthProvider = ({ children }) => {
         } catch (err) {
             console.error(err);
             throw err;
+        } finally {
+            setLoading(false);
         }
     };
 
     const sendVerificationCode = async (email) => {
+        setLoading(true);
         try {
             const res = await api.sendVerificationCode(email);
             return res.data;
         } catch (err) {
             console.error(err);
             throw err;
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    const forgotPassword = async (email) => {
+        setLoading(true);
+        try {
+            const res = await api.forgotPassword(email);
+            return res.data;
+        } catch (err) {
+            console.error(err);
+            throw err;
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    const verifyOtp = async (otp) => {
+        setLoading(true);
+        try {
+            const res = await api.verifyOtp(otp);
+            return res.data;
+        } catch (err) {
+            console.error(err);
+            throw err;
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    const resetPassword = async (otp, newPassword) => {
+        setLoading(true);
+        try {
+            const res = await api.resetPassword(otp, newPassword);
+            return res.data;
+        } catch (err) {
+            console.error(err);
+            throw err;
+        } finally {
+            setLoading(false);
         }
     };
 
@@ -52,6 +102,7 @@ export const AuthProvider = ({ children }) => {
     };
 
     const updateProfile = async (profileData) => {
+        setLoading(true);
         try {
             if (!user) return;
             const res = await api.updateProfile(user.id, profileData);
@@ -61,11 +112,25 @@ export const AuthProvider = ({ children }) => {
         } catch (err) {
             console.error(err);
             throw err;
+        } finally {
+            setLoading(false);
         }
     };
 
     return (
-        <AuthContext.Provider value={{ user, login, forgotPassword, verifyOtp, resetPassword, register, sendVerificationCode, logout, updateProfile, isAuthenticated: !!user }}>
+        <AuthContext.Provider value={{
+            user,
+            loading,
+            login,
+            forgotPassword,
+            verifyOtp,
+            resetPassword,
+            register,
+            sendVerificationCode,
+            logout,
+            updateProfile,
+            isAuthenticated: !!user
+        }}>
             {children}
         </AuthContext.Provider>
     );
